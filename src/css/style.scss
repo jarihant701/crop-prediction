@@ -30,10 +30,20 @@
   padding: 1rem;
   margin-bottom: 2rem;
 }
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .health-card-heading {
   font-size: 1.25rem;
   text-align: center;
   font-weight: bold;
+}
+
+.btn-primary {
+  margin-top: 1rem;
 }
 table {
   width: 100%;
@@ -62,4 +72,7 @@ th {
 .High,
 .Deficient {
   background-color: $red;
+}
+.width-60 {
+  width: 60%;
 }

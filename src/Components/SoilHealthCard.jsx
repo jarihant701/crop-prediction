@@ -1,137 +1,135 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
+import { useNavigate } from 'react-router-dom';
 
 function SoilHealthCard() {
-  const microNutrientsData = {
-    OC: ['Organic Carbon (OC)', '%', 0.51, 0.71],
-    N: ['Nitorgen (N)', '%', 280, 560],
-    P: ['Phosphorous (P)', '%', 23, 57],
-    K: ['Potassium (K)', '%', 143, 337],
+  const nutrients = [
+    'AS%',
+    'SrAc%',
+    'HAc%',
+    'MAc%',
+    'SlAc%',
+    'N%',
+    'MlAl%',
+    'SlAl%',
+    'Zn%',
+    'Fe%',
+    'Cu%',
+    'Mn%',
+    'B%',
+    'S%',
+    'N',
+    'OC',
+    'P',
+    'K',
+  ];
+  const [nutrientValue, setNutrientValue] = useState(Array(18).fill(0));
+  const navigate = useNavigate();
+
+  const handleInputChange = (index, event) => {
+    const newNutrientValue = [...nutrientValue];
+    newNutrientValue[index] = Number(event.target.value);
+    setNutrientValue(newNutrientValue);
   };
 
-  const macroNutrientsData = {
-    S: ['Sulphur (S)', 10],
-    Zn: ['Zinc (Zn)', 0.6],
-    B: ['Boron (B)', 0.5],
-    Fe: ['Iron (Fe)', 4.5],
-    Mn: ['Manganese (Mn)', 2.0],
-    Cu: ['Copper (Cu)', 0.2],
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const calculateRatingForMicroNutrientsData = (
-    minValue,
-    maxValue,
-    testValue
-  ) => {
-    if (testValue === '') return '';
-    if (minValue > testValue) return 'Low';
-    if (maxValue < testValue) return 'High';
-    return 'Normal';
-  };
+    // const response = await fetch('http://127.0.0.1:5000/predict', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ nutrientValue }),
+    // });
 
-  const calculateRatingForMacroNutrients = (value, testValue) => {
-    if (testValue === '') return '';
-    if (value > testValue) return 'Deficient';
-    return 'Sufficient';
-  };
+    // const data = await response.json();
 
-  const [microNutrients, setMicroNutrients] = useState(['', '', '', '']);
-  const microNutrientsDataFieldOnChange = (index) => (event) => {
-    let newArr = [...microNutrients];
-    newArr[index] = event.target.value;
-    setMicroNutrients(newArr);
-  };
-
-  const [macroNutrients, setmacroNutrients] = useState([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-  ]);
-  const macroNutrientsDataFieldOnChange = (index) => (event) => {
-    let newArr = [...macroNutrients];
-    newArr[index] = event.target.value;
-    setmacroNutrients(newArr);
+    // const data = {
+    //   Cotton_KNR: 1.2700626777500001,
+    //   Cotton_SVR: 1.3525133055223062,
+    //   Rapeseed_KNR: 1.5533333334,
+    //   Rapeseed_SVR: 1.4305792494298675,
+    //   Rice_KNR: 3.7758696287999998,
+    //   Rice_SVR: 4.053365839959076,
+    //   Urad_KNR: 0.6278183912520002,
+    //   Urad_SVR: 0.6007634676788972,
+    //   arhar_KNR: 1.0174418389879993,
+    //   arhar_SVR: 1.0174418389879993,
+    //   barley_KNR: 3.844436464570001,
+    //   barley_SVR: 3.921193379316254,
+    //   gram_KNR: 1.1762917679660003,
+    //   gram_SVR: 1.2119816891310224,
+    //   guarseed_KNR: 0.8831135298920003,
+    //   guarseed_SVR: 0.7902142015827979,
+    //   maize_KNR: 3.69896224545,
+    //   maize_SVR: 3.8771146494201902,
+    //   moong_KNR: 0.698524863698,
+    //   moong_SVR: 0.6951878423874562,
+    //   peasandbeans_KNR: 1.6731873196400002,
+    //   peasandbeans_SVR: 1.5478378638969028,
+    //   sesamum_KNR: 0.34557607722000006,
+    //   sesamum_SVR: 0.3426854143807491,
+    //   sugarcane_KNR: 77.06797718088,
+    //   sugarcane_SVR: 76.70158399842452,
+    //   wheat_KNR: 4.554,
+    //   wheat_SVR: 4.575600810785631,
+    // };
+    const data = {
+      cotton: [1.2700626777500001, 1.3525133055223062],
+      rapeseed: [1.5533333334, 1.4305792494298675],
+      rice: [3.7758696287999998, 4.2342423423465],
+      urad: [0.6278183912520002, 0.5324242424246],
+      barley: [3.844436464570001, 3.921193379316254],
+      gram: [1.1762917679660003, 1.2119816891310224],
+      guarseed: [0.8831135298920003, 0.7902142015827979],
+      maize: [3.69896224545, 3.8771146494201902],
+      moong: [0.698524863698, 0.6951878423874562],
+      peasandbeans: [1.6731873196400002, 1.5478378638969028],
+      sesamum: [0.34557607722000006, 0.3426854143807491],
+      sugarcane: [7.06797718088, 6.70158399842452],
+      arhar: [1.0174418389879993, 1.0174418389879993],
+      wheat: [4.554, 4.575600810785631],
+    };
+    navigate('/result', { state: { data } });
   };
 
   return (
-    <div className='health-card-wrapper'>
+    <div className='health-card-wrapper width-60'>
       <div className='health-card-heading'>Soil Health Card</div>
       <div className='soil-test-result'>
-        <table className='test-result'>
-          <thead>
-            <th className='table-heading' colSpan={5}>
-              Soil Test Result
-            </th>
-            <tr className='bg-green'>
-              <th>Parameter</th>
-              <th>Test Value</th>
-              <th>Unit</th>
-              <th>Rating</th>
-              <th>Normal Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.keys(microNutrientsData).map((key, index) => {
-              return (
-                <tr>
-                  <td>{microNutrientsData[key][0]}</td>
-                  <td>
-                    <Form.Control
-                      type='number'
-                      onChange={microNutrientsDataFieldOnChange(index)}
-                      value={microNutrients[index]}
-                    />
-                  </td>
-                  <td>{microNutrientsData[key][1]}</td>
-                  <td
-                    className={calculateRatingForMicroNutrientsData(
-                      microNutrientsData[key][2],
-                      microNutrientsData[key][3],
-                      microNutrients[index]
-                    )}
-                  >
-                    {calculateRatingForMicroNutrientsData(
-                      microNutrientsData[key][2],
-                      microNutrientsData[key][3],
-                      microNutrients[index]
-                    )}
-                  </td>
-                  <td>{`${microNutrientsData[key][2]} - ${microNutrientsData[key][3]} ${microNutrientsData[key][1]}`}</td>
-                </tr>
-              );
-            })}
-            {Object.keys(macroNutrientsData).map((key, index) => {
-              return (
-                <tr key={index}>
-                  <td>{macroNutrientsData[key][0]}</td>
-                  <td>
-                    <Form.Control
-                      type='number'
-                      onChange={macroNutrientsDataFieldOnChange(index)}
-                      value={macroNutrients[index]}
-                    />
-                  </td>
-                  <td>%</td>
-                  <td
-                    className={calculateRatingForMacroNutrients(
-                      macroNutrientsData[key][1],
-                      macroNutrients[index]
-                    )}
-                  >
-                    {calculateRatingForMacroNutrients(
-                      macroNutrientsData[key][1],
-                      macroNutrients[index]
-                    )}
-                  </td>
-                  <td>{`> ${macroNutrientsData[key][1]} %`}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <form onSubmit={handleSubmit}>
+          <table className='test-result'>
+            <thead>
+              <th className='table-heading' colSpan={5}>
+                Soil Test Result
+              </th>
+              <tr className='bg-green'>
+                <th>Parameter</th>
+                <th>Test Value</th>
+                <th>Unit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {nutrientValue.map((nutrient, index) => {
+                return (
+                  <tr>
+                    <td>{nutrients[index]}</td>
+                    <td>
+                      <Form.Control
+                        type='number'
+                        onChange={(event) => handleInputChange(index, event)}
+                        value={nutrient}
+                      />
+                    </td>
+                    <td>%</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <button type='submit' className='btn btn-primary'>
+            Predict Yield
+          </button>
+        </form>
       </div>
     </div>
   );
