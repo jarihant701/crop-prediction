@@ -81,7 +81,16 @@ const Result = () => {
             </tbody>
           </table>
         </div>
-        <Bar data={chartData} options={options} />
+        <div
+          style={{
+            backgroundColor: 'white',
+            padding: '10px',
+            marginTop: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          <Bar data={chartData} options={options} />
+        </div>
       </div>
     </div>
   );
