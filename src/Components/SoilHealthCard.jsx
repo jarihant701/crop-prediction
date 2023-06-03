@@ -23,25 +23,50 @@ function SoilHealthCard() {
     'P',
     'K',
   ];
-  const [nutrientValue, setNutrientValue] = useState(Array(18).fill(0));
+  const [nutrientValue, setNutrientValue] = useState({
+    'AS%': 0,
+    'SrAc%': 0,
+    'HAc%': 0,
+    'MAc%': 0,
+    'SlAc%': 0,
+    'N%': 0,
+    'MlAl%': 0,
+    'SlAl%': 0,
+    'Zn%': 0,
+    'Fe%': 0,
+    'Cu%': 0,
+    'Mn%': 0,
+    'B%': 0,
+    'S%': 0,
+    N: 0,
+    OC: 0,
+    P: 0,
+    K: 0,
+  });
   const navigate = useNavigate();
 
   const handleInputChange = (index, event) => {
-    const newNutrientValue = [...nutrientValue];
-    newNutrientValue[index] = Number(event.target.value);
-    setNutrientValue(newNutrientValue);
+    const { id, value } = event.target;
+    setNutrientValue((prevValues) => ({
+      ...prevValues,
+      [id]: Number(value),
+    }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // const response = await fetch('http://127.0.0.1:5000/predict', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ nutrientValue }),
-    // });
+    console.log(JSON.stringify({ nutrientValue }));
+    const response = await fetch('/predict', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(nutrientValue),
+    });
 
-    // const data = await response.json();
+    const data = await response.json();
 
     // const data = {
     //   Cotton_KNR: 1.2700626777500001,
@@ -73,22 +98,22 @@ function SoilHealthCard() {
     //   wheat_KNR: 4.554,
     //   wheat_SVR: 4.575600810785631,
     // };
-    const data = {
-      cotton: [1.2700626777500001, 1.3525133055223062],
-      rapeseed: [1.5533333334, 1.4305792494298675],
-      rice: [3.7758696287999998, 4.2342423423465],
-      urad: [0.6278183912520002, 0.5324242424246],
-      barley: [3.844436464570001, 3.921193379316254],
-      gram: [1.1762917679660003, 1.2119816891310224],
-      guarseed: [0.8831135298920003, 0.7902142015827979],
-      maize: [3.69896224545, 3.8771146494201902],
-      moong: [0.698524863698, 0.6951878423874562],
-      peasandbeans: [1.6731873196400002, 1.5478378638969028],
-      sesamum: [0.34557607722000006, 0.3426854143807491],
-      sugarcane: [7.06797718088, 6.70158399842452],
-      arhar: [1.0174418389879993, 1.0174418389879993],
-      wheat: [4.554, 4.575600810785631],
-    };
+    // const data = {
+    //   cotton: [1.2700626777500001, 1.3525133055223062],
+    //   rapeseed: [1.5533333334, 1.4305792494298675],
+    //   rice: [3.7758696287999998, 4.2342423423465],
+    //   urad: [0.6278183912520002, 0.5324242424246],
+    //   barley: [3.844436464570001, 3.921193379316254],
+    //   gram: [1.1762917679660003, 1.2119816891310224],
+    //   guarseed: [0.8831135298920003, 0.7902142015827979],
+    //   maize: [3.69896224545, 3.8771146494201902],
+    //   moong: [0.698524863698, 0.6951878423874562],
+    //   peasandbeans: [1.6731873196400002, 1.5478378638969028],
+    //   sesamum: [0.34557607722000006, 0.3426854143807491],
+    //   sugarcane: [7.06797718088, 6.70158399842452],
+    //   arhar: [1.0174418389879993, 1.0174418389879993],
+    //   wheat: [4.554, 4.575600810785631],
+    // };
     navigate('/result', { state: { data } });
   };
 
@@ -109,7 +134,7 @@ function SoilHealthCard() {
               </tr>
             </thead>
             <tbody>
-              {nutrientValue.map((nutrient, index) => {
+              {nutrients.map((nutrient, index) => {
                 return (
                   <tr>
                     <td>{nutrients[index]}</td>
@@ -117,7 +142,8 @@ function SoilHealthCard() {
                       <Form.Control
                         type='number'
                         onChange={(event) => handleInputChange(index, event)}
-                        value={nutrient}
+                        value={nutrientValue[index]}
+                        id={nutrients[index]}
                       />
                     </td>
                     <td>%</td>
